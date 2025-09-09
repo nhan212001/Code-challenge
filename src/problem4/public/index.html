@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>User API Tester</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f9f9f9;
+        padding: 20px;
+      }
+      h1 {
+        color: #333;
+      }
+      .box {
+        background: white;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin: 6px 0 2px;
+      }
+      input,
+      textarea {
+        width: 100%; /* chiếm 100% chiều ngang box */
+        max-width: 100%; /* không cho vượt quá box */
+        padding: 8px;
+        margin-bottom: 8px;
+        box-sizing: border-box; /* tính cả padding + border vào width */
+      }
+      button {
+        padding: 8px 14px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      pre {
+        background: #eee;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>User API Tester</h1>
+
+    <div class="box">
+      <h3>Create User</h3>
+      <label>Name:</label>
+      <input id="name" />
+      <label>Email:</label>
+      <input id="email" />
+      <label>Age:</label>
+      <input id="age" type="number" />
+      <button onclick="createUser()">Create</button>
+      <h3>Response:</h3>
+      <pre id="outputCreate"></pre>
+    </div>
+
+    <div class="box">
+      <h3>Get All Users</h3>
+      <button onclick="getUsers()">Fetch</button>
+      <h3>Response:</h3>
+      <pre id="outputGetAll"></pre>
+    </div>
+
+    <div class="box">
+      <h3>Get User by ID</h3>
+      <label>User ID:</label>
+      <input id="getId" />
+      <button onclick="getUser()">Get</button>
+      <h3>Response:</h3>
+      <pre id="outputGet"></pre>
+    </div>
+
+    <div class="box">
+      <h3>Update User</h3>
+      <label>User ID:</label>
+      <input id="updateId" />
+      <label>Name:</label>
+      <input id="updateName" />
+      <label>Email:</label>
+      <input id="updateEmail" />
+      <label>Age:</label>
+      <input id="updateAge" type="number" />
+      <button onclick="updateUser()">Update</button>
+      <h3>Response:</h3>
+      <pre id="outputUpdate"></pre>
+    </div>
+
+    <div class="box">
+      <h3>Delete User</h3>
+      <label>User ID:</label>
+      <input id="deleteId" />
+      <button onclick="deleteUser()">Delete</button>
+      <h3>Response:</h3>
+      <pre id="outputDelete"></pre>
+    </div>
+
+    <script>
+      const API = "http://localhost:3000/users";
+
+      function show(target, res) {
+        document.getElementById(target).textContent = JSON.stringify(
+          res,
+          null,
+          2
+        );
+      }
+
+      async function createUser() {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const age = document.getElementById("age").value;
+        const res = await fetch(API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, age }),
+        });
+        show("outputCreate", await res.json());
+      }
+
+      async function getUsers() {
+        const res = await fetch(API);
+        show("outputGetAll", await res.json());
+      }
+
+      async function getUser() {
+        const id = document.getElementById("getId").value;
+        if (!id) {
+          show("outputGet", { error: "User ID is required" });
+          return;
+        }
+
+        const res = await fetch(`${API}/${id}`);
+        show("outputGet", await res.json());
+      }
+
+      async function updateUser() {
+        const id = document.getElementById("updateId").value;
+        const name = document.getElementById("updateName").value;
+        const email = document.getElementById("updateEmail").value;
+        const age = document.getElementById("updateAge").value;
+        if (!id) {
+          show("outputUpdate", { error: "User ID is required" });
+          return;
+        }
+        const res = await fetch(`${API}/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, age }),
+        });
+        show("outputUpdate", await res.json());
+      }
+
+      async function deleteUser() {
+        const id = document.getElementById("deleteId").value;
+        if (!id) {
+          show("outputDelete", { error: "User ID is required" });
+          return;
+        }
+        const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+        show("outputDelete", await res.json());
+      }
+    </script>
+  </body>
+</html>

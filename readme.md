@@ -39,4 +39,3 @@ Here are the computational inefficiencies and anti-patterns found in the code bl
    npm run dev
    ```
 5. The API will be available at [http://localhost:3000](http://localhost:3000)
-6. Open `public/index.html` in your browser to test the API endpoints with the provided UI.

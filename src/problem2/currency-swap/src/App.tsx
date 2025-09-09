@@ -97,6 +97,7 @@ function App() {
           </div>
         </div>
       )}
+      <h1 className="text-3xl font-bold mb-6">Currency Swap</h1>
       <div className="flex flex-col gap-3 w-full max-w-md">
         <div className="flex bg-gray-800 rounded-lg overflow-hidden">
           <input
